@@ -1,0 +1,8 @@
+DOXYFILE_ENCODING      = UTF-8
+PROJECT_NAME           = "Modular Synthesizer"
+PROJECT_BRIEF          = "A framework for creating a software modular synthesizer in C++."
+OUTPUT_DIRECTORY       =
+CREATE_SUBDIRS         = NO
+ALLOW_UNICODE_NAMES    = NO
+OUTPUT_LANGUAGE        = English
+INHERIT_DOCS           = YES
