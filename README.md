@@ -1,18 +1,20 @@
 # ModSynth - a modular synthesizer framework for C++
 
-This is a small C++ library that allows you to write a software synthesizer
-in the same way you would build a real [modular synthesizer]. Several types
-are provided that implement the basic components of a modular synthesizer,
-such as a [VCO], [envelope generator], [sequencer] and so on. Each type
-derives from struct Module, and has public variables that represent the
-inputs and outputs of the component it implements, and these inputs and
-outputs can be connected together in two possible ways:
+This is a small C++ library that allows you to write a software synthesizer in
+the same way you would build a real [modular synthesizer]. Several types are
+provided that implement the basic components of a modular synthesizer, such as
+a [VCO], [envelope generator], [sequencer] and so on. Each type derives from
+struct Module, and has public variables that represent the inputs and outputs
+of the component it implements, and these inputs and outputs can be connected
+together in two possible ways:
 
-1. By declaring Wire objects that will automatically copy from a given output to a given input.
-2. By defining a new Module type, and adding assignment statements in a user-defined update() function.
+1. By declaring Wire objects that will automatically copy from a given output
+   to a given input.
+2. By defining a new Module type, and adding assignment statements in a
+   user-defined update() function.
 
-It is also easy to create new module types yourself. Finally, this library
-will take care of sending the output sent to Speaker objects  to the sound card.
+It is also easy to create new module types yourself. Finally, this library will
+take care of sending the output sent to Speaker objects  to the sound card.
 
 [modular synthesizer]: https://en.wikipedia.org/wiki/Modular_synthesizer
 [VCO]: https://en.wikipedia.org/wiki/Voltage-controlled_oscillator
@@ -26,6 +28,8 @@ The following shows an example of how you can use this library:
 ```
 #include <iostream>
 #include "modsynth.hpp"
+
+using namespace ModSynth;
 
 int main()
 {

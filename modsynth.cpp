@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 #include "modsynth.hpp"
 
 #include <algorithm>

@@ -1,6 +1,7 @@
-#include "modsynth.hpp"
+/* SPDX-License-Identifier: MIT */
 
 #include <iostream>
+#include "modsynth.hpp"
 
 using namespace ModSynth;
 
