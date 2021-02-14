@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <deque>
 #include <initializer_list>
 #include <string>
 #include <vector>
@@ -50,6 +51,11 @@ struct Module {
 	 * values and any other state it might have.
 	 */
 	virtual void update() = 0;
+
+	/**
+	 * @brief The time step used for the update function in seconds.
+	 */
+	static constexpr float dt = 1.0f / 48000.0f;
 };
 
 /**
@@ -206,6 +212,96 @@ struct VCF: Module {
 	void update(); ///< The function that will update the state of this module.
 };
 
+/**
+ * @brief A linear slew.
+ *
+ * The output will try to follow the input, but the change in the output is limited to a linear slew rate.
+ */
+struct LinearSlew: Module {
+	/// @name Inputs
+	///@{
+	float in{}; ///< The input signal.
+	float rate{1}; ///< The slew rate in units/second.
+	///@}
+
+	/// @name Outputs
+	///@{
+	float out{}; ///< The output signal.
+	///@}
+
+	LinearSlew() = default;
+
+	/**
+	 * @brief The constructor.
+	 *
+	 * @param rate     The slew rate in units/second.
+	 * @param initial  The initial value of the output.
+	 */
+	LinearSlew(float rate = 1, float initial = 0): rate(rate), out(initial) {}
+
+	void update(); ///< The function that will update the state of this module.
+};
+
+/**
+ * @brief An exponential slew.
+ *
+ * The output will try to follow the input, but the change in the output is limited to an exponential slew rate.
+ */
+struct ExponentialSlew: Module {
+	/// @name Inputs
+	///@{
+	float in{1};    ///< The input signal.
+	float rate{1}; ///< The slew rate in octaves/second.
+	///@}
+
+	/// @name Outputs
+	///@{
+	float out{1}; ///< The output signal.
+	///@}
+
+	ExponentialSlew() = default;
+
+	/**
+	 * @brief The constructor.
+	 *
+	 * @param rate     The slew rate in octaves/second.
+	 * @param initial  The initial value of the output.
+	 */
+	ExponentialSlew(float rate = 1, float initial = 1): rate(rate), out(initial) {}
+
+	void update(); ///< The function that will update the state of this module.
+};
+
+/**
+ * @brief A delay.
+ *
+ * The output is the input delayed by a given time.
+ * The maximum delay must be passed to the constructor.
+ */
+struct Delay: Module {
+	/// @name Inputs
+	///@{
+	float in{};  ///< The input signal.
+	float delay; ///< The delay in seconds.
+	///@}
+
+	/// @name Outputs
+	///@{
+	float out{}; ///< The output signal.
+	///@}
+
+	/**
+	 * @brief The constructor.
+	 *
+	 * @param max_delay  The maximum delay in seconds.
+	 */
+	Delay(float max_delay = 1);
+
+	void update(); ///< The function that will update the state of this module.
+private:
+	std::deque<float> buffer;
+};
+
 // Sequencer
 
 /**
@@ -302,11 +398,5 @@ void start();
  * @brief Stop the audio output.
  */
 void stop();
-
-/**
- * @brief The time step between calls to update().
- */
-
-constexpr float dt = 1.0f / 48000.0f;
 
 }

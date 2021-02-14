@@ -213,6 +213,61 @@ void VCF::update()
 	bandpass_out += f * highpass_out;
 }
 
+void LinearSlew::update()
+{
+	float delta = in - out;
+
+	if (delta > rate * dt) {
+		delta = rate * dt;
+	} else if (delta < -rate * dt) {
+		delta = -rate * dt;
+	}
+
+	out += delta;
+}
+
+void ExponentialSlew::update()
+{
+	float delta = std::log2(in / out);
+
+	if (delta > rate * dt) {
+		delta = rate * dt;
+	} else if (delta < -rate * dt) {
+		delta = -rate * dt;
+	}
+
+	out *= std::exp2(delta);
+}
+
+Delay::Delay(float max_delay):
+	delay(max_delay),
+	buffer(size_t(std::ceil(max_delay / dt)) + 1)
+{
+}
+
+void Delay::update()
+{
+	// Update the delay line
+	buffer.pop_back();
+	buffer.push_front(in);
+
+	// Clamp delay to the supported range
+	auto nsamples = buffer.size() - 1;
+
+	if (delay < 0) {
+		delay = 0;
+	}
+
+	if (delay > nsamples * dt) {
+		delay = nsamples * dt;
+	}
+
+	// Linear interpolation of the value at the delay position
+	size_t pos = delay / dt;
+	float fraction = delay / dt - pos;
+	out = buffer[pos] * (1 - fraction) + buffer[pos + 1] * fraction;
+}
+
 Sequencer::Sequencer(std::initializer_list<std::string> notes)
 {
 	static const std::map<std::string, int> base_notes = {
